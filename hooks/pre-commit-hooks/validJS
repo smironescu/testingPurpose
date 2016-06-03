@@ -10,7 +10,7 @@ pass=true
 echo "\nValidating JavaScript:\n"
 
 for file in ${files}; do
-    result=$(jslint ${file} | grep "${file} is OK")
+    result=$(jslint c /Users/sergiumironescuiancu1/Desktop/Sergio/testingPurpose/test.js | grep "${file} is OK")
     if [ "$result" != "" ]; then
         echo "\t\033[32mJSLint Passed: ${file}\033[0m"
     else
