@@ -4,7 +4,7 @@ ROOTPATH=$(git rev-parse --show-toplevel)
 files=$(git diff --cached --name-only --diff-filter=AM)
 status=0
 
-for hook in ${MARFEELXP_HOME}/Jinks/bin/git-hooks/pre-commit-hooks/*.sh
+for hook in /Users/sergiumironescuiancu1/Desktop/Sergio/testingPurpose/git-hooks/pre-commit-hooks/*.sh
 do
 
         echo -e "************************************"
