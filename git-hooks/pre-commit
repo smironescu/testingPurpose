@@ -1,0 +1,32 @@
+#!/bin/bash
+
+ROOTPATH=$(git rev-parse --show-toplevel)
+files=$(git diff --cached --name-only --diff-filter=AM)
+status=0
+
+for hook in ${MARFEELXP_HOME}/Jinks/bin/git-hooks/pre-commit-hooks/*.sh
+do
+
+        echo -e "************************************"
+        echo -e "$hook"
+        echo -e "************************************"
+
+        eval "${hook} '$files' ${ROOTPATH}"
+
+        currentStatus=$?
+
+        if [ $currentStatus == 0 ]; then
+                echo -e "OK :)"
+        fi
+
+        if [ $status == 0 ]; then
+                status=$currentStatus
+        fi
+done
+
+if [ $status != 0 ]; then
+        echo -e "************************************"
+        echo -e "************************************"
+        echo -e "COMMIT REJECTED"
+        exit 1
+fi
