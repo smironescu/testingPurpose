@@ -1,16 +1,9 @@
 #!/bin/sh
 
-files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.json$")
-if [ "$files" = "" ]; then
-    exit 0
-fi
 
+status=0
 
-pass=true
-
-echo "\nValidating JavaScript:\n"
-
-for file in ${files}; do
+for i in $(echo "$1" | grep '.json'); do
     result=$(jsonlint -c ${file} | grep "${file} is OK")
     if [ "$result" != "" ]; then
         echo "\t\033[32mJSLint Passed: ${file}\033[0m"
