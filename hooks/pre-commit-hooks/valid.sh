@@ -1,31 +1,30 @@
-echo -e "\n#### Validating chef environment files ####"
+#!/bin/sh
 
-
-if git-rev-parse --verify HEAD >/dev/null 2>&1; then
-    against=HEAD
-else
-    against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.json$")
+if [ "$files" = "" ]; then
+    exit 0
 fi
 
-bad_file=0
 
-for FILE in `git diff-index --name-status $against -- | cut -c3-` ; do
+pass=true
 
-    if [ ${FILE: -5} == ".json" ]; then
-        echo -e "  Validating $FILE..."
-        cat $FILE | jq 'any'
-        if [[ $? -ne 0 ]]; then
-          echo -e "\tERROR: JSON parser failed!"
-          bad_file=1
-        fi
+echo "\nValidating JavaScript:\n"
+
+for file in ${files}; do
+    result=$(jslint ${file} | grep "${file} is OK")
+    if [ "$result" != "" ]; then
+        echo "\t\033[32mJSLint Passed: ${file}\033[0m"
+    else
+        echo "\t\033[31mJSLint Failed: ${file}\033[0m"
+        pass=false
     fi
 done
 
-if [[ $bad_file -eq 1 ]]; then
-  echo -e "\n"
-  exit 1
+echo "\nJavaScript validation complete\n"
+
+if ! $pass; then
+    echo "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass JSLint but do not. Please fix the JSLint errors and try again.\n"
+    exit 1
 else
-  echo "#### All JSON files OK! #####"
-  echo -e "\n"
-  exit 0
+    echo "\033[42mCOMMIT SUCCEEDED\033[0m\n"
 fi
