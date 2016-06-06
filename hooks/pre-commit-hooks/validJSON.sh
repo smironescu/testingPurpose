@@ -3,7 +3,7 @@
 status=0
 
 for i in $(echo "$1" | grep '.json'); do
-        jsonlint -c /Users/sergiumironescuiancu1/Desktop/Sergio/testingPurpose/test.json  $2/$i
+        jsonlint-cli $2/$i
 
         currentStatus=$?
 
